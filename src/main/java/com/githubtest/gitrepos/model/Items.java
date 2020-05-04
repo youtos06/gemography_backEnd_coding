@@ -25,7 +25,7 @@ public class Items {
 
     @Transient
     @JsonInclude()
-    private ArrayList<gitRepo> items;
+    private ArrayList<GitRepo> items;
 
     public Items() {
         this.items = new ArrayList<>();
@@ -47,22 +47,22 @@ public class Items {
         this.date = date;
     }
 
-    public ArrayList<gitRepo> getItems() {
+    public ArrayList<GitRepo> getItems() {
         return items;
     }
 
 
 
-    public void setItems(ArrayList<gitRepo> items) {
+    public void setItems(ArrayList<GitRepo> items) {
         this.items= items;
     }
 
-    public void addItems(List<gitRepo> tempItems){
+    public void addItems(List<GitRepo> tempItems){
 
         this.items.addAll(tempItems);
     }
 
-    public void addItems(ArrayList<gitRepo> tempItems){
+    public void addItems(ArrayList<GitRepo> tempItems){
         this.items.addAll(tempItems);
     }
 }

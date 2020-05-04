@@ -2,12 +2,11 @@ package com.githubtest.gitrepos.consumingRest;
 
 
 import com.githubtest.gitrepos.model.Items;
-import com.githubtest.gitrepos.model.gitRepo;
+import com.githubtest.gitrepos.model.GitRepo;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class ConsumingGitReposRest {
@@ -32,7 +31,7 @@ public class ConsumingGitReposRest {
     }
 
 
-    public ArrayList<gitRepo> consumGitRestReposApiPage(int page, String date) {
+    public ArrayList<GitRepo> consumGitRestReposApiPage(int page, String date) {
         String gitReposApiUrl = "https://api.github.com/search/repositories?q=created:>" + date + "&sort=stars&order=desc&page=" + page;
         // we don't verify the results since we totally control the communication with the api from our side
         // probability of git server going down is small

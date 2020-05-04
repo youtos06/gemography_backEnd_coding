@@ -5,6 +5,7 @@ import com.githubtest.gitrepos.consumingRest.ConsumingGitReposRest;
 import com.githubtest.gitrepos.dao.ItemsDao;
 import com.githubtest.gitrepos.dao.RepositoryDao;
 import com.githubtest.gitrepos.model.Items;
+import com.githubtest.gitrepos.model.dto.ItemsDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,13 +19,15 @@ public class ItemsService {
     private final ConsumingGitReposRest consumingGitReposRest;
     private RestTemplate restTemplate = new RestTemplate();
     private SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-dd");
-    private RepositoryDao repositoryDao;
-    private ItemsDao itemsDao;
+    private final RepositoryDao repositoryDao;
+    private final ItemsDao itemsDao;
+    private final ItemsDtoFromItemsConverter itemsDtoFromItemsConverter;
 
-    public ItemsService(ConsumingGitReposRest consumingGitReposRest, RepositoryDao repositoryDao, ItemsDao itemsDao) {
+    public ItemsService(ConsumingGitReposRest consumingGitReposRest, RepositoryDao repositoryDao, ItemsDao itemsDao, ItemsDtoFromItemsConverter itemsDtoFromItemsConverter) {
         this.consumingGitReposRest = consumingGitReposRest;
         this.repositoryDao = repositoryDao;
         this.itemsDao = itemsDao;
+        this.itemsDtoFromItemsConverter = itemsDtoFromItemsConverter;
     }
 
     /**
@@ -35,7 +38,7 @@ public class ItemsService {
      * -> if the next day we call the function we delete the previous day data
      * @return
      */
-    public Items getItemsFromGitApi(){
+    public Items getRepositoriesFromGitApiLastMonth(){
         Items famousRepositories ;
         Calendar c1 = Calendar.getInstance();
         c1.add(Calendar.DAY_OF_YEAR, -30);
@@ -44,26 +47,46 @@ public class ItemsService {
         String dueudate = df.format(resultdate);
         //System.out.println("-------------api call----------------"+(itemsDao.getByDate(dueudate) == null));
         if (itemsDao.getByDate(dueudate) == null){
-            this.clearDataBaseForNewDayCall();
-            famousRepositories = consumingGitReposRest.getMostFamousRepository(dueudate);
-            famousRepositories.getItems().forEach((item) -> {
-                //System.out.println(item.toString());
-                if(item.getLanguage()!=null){
-                    item.setLanguage(item.getLanguage().toLowerCase());
-                }else{
-                    item.setLanguage("undefined");
-                }
-                repositoryDao.save(item);
-            });
-            famousRepositories.setDate(dueudate);
-            famousRepositories.setId(0);
-            itemsDao.save(famousRepositories);
+            clearDataBaseForNewDayCall();
+            famousRepositories = getGitApiService(dueudate);
+
         }else{
             //System.out.println("-------------enter Database----------------");
-            famousRepositories = itemsDao.getByDate(dueudate);
-            famousRepositories.addItems(repositoryDao.findAll());
-        }
 
+            famousRepositories = getGitDatabaseStorage(dueudate);
+        }
+        return famousRepositories;
+    }
+
+    public ItemsDto getRepositoriesAccordingToLanguageFromLastMonth(String language){
+        Items items = getRepositoriesFromGitApiLastMonth();
+        return itemsDtoFromItemsConverter.convert(items,language);
+    }
+
+    // call service and modify data based on apiService
+    private Items getGitApiService(String dueudate){
+        Items famousRepositories ;
+        this.clearDataBaseForNewDayCall();
+        famousRepositories = consumingGitReposRest.getMostFamousRepository(dueudate);
+        famousRepositories.getItems().forEach((item) -> {
+            //System.out.println(item.toString());
+            if(item.getLanguage()!=null){
+                item.setLanguage(item.getLanguage().toLowerCase());
+            }else{
+                item.setLanguage("undefined");
+            }
+            repositoryDao.save(item);
+        });
+        famousRepositories.setDate(dueudate);
+        famousRepositories.setId(0);
+        itemsDao.save(famousRepositories);
+        return famousRepositories;
+    }
+    // get data from the database
+    private Items getGitDatabaseStorage(String dueudate){
+        Items famousRepositories ;
+        famousRepositories = itemsDao.getByDate(dueudate);
+        famousRepositories.addItems(repositoryDao.findAll());
         return famousRepositories;
     }
 

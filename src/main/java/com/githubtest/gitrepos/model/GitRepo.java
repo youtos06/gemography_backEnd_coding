@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class gitRepo {
+public class GitRepo {
     @Id
     private Long id;
     private String node_id;
@@ -18,7 +18,7 @@ public class gitRepo {
     private String created_at;
     private String language;
 
-    public gitRepo() {
+    public GitRepo() {
     }
 
 
@@ -73,7 +73,7 @@ public class gitRepo {
 
     @Override
     public String toString() {
-        return "gitRepo{" +
+        return "GitRepo{" +
                 "id=" + id +
                 ", node_id='" + node_id + '\'' +
                 ", name='" + name + '\'' +
