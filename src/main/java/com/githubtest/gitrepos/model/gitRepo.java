@@ -3,26 +3,25 @@ package com.githubtest.gitrepos.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Repository {
-    private long id;
+public class gitRepo {
+    @Id
+    private Long id;
     private String node_id;
     private String name;
     private String full_name;
     private String created_at;
     private String language;
 
-    public Repository() {
+    public gitRepo() {
     }
 
-    public Repository(long id, String node_id, String name, String full_name, String created_at, String language) {
-        this.id = id;
-        this.node_id = node_id;
-        this.name = name;
-        this.full_name = full_name;
-        this.created_at = created_at;
-        this.language = language;
-    }
+
 
     public long getId() {
         return id;
@@ -70,5 +69,17 @@ public class Repository {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    @Override
+    public String toString() {
+        return "gitRepo{" +
+                "id=" + id +
+                ", node_id='" + node_id + '\'' +
+                ", name='" + name + '\'' +
+                ", full_name='" + full_name + '\'' +
+                ", created_at='" + created_at + '\'' +
+                ", language='" + language + '\'' +
+                '}';
     }
 }

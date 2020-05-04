@@ -4,8 +4,10 @@ package com.githubtest.gitrepos.rest;
 
 import com.githubtest.gitrepos.consumingRest.ConsumingGitReposRest;
 import com.githubtest.gitrepos.model.Items;
+import com.githubtest.gitrepos.service.ItemsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,18 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class gitApiController {
 
 
-    private final ConsumingGitReposRest consumingGitReposRest;
+    private final ItemsService itemsService;
 
-    public gitApiController(ConsumingGitReposRest consumingGitReposRest) {
-        this.consumingGitReposRest = consumingGitReposRest;
+    public gitApiController(ItemsService itemsService) {
+        this.itemsService = itemsService;
     }
 
     @GetMapping()
     public ResponseEntity<Items> getTrendRepositoriesForLastMonth(){
 
-        return ResponseEntity.ok().body(consumingGitReposRest.getMostFamousRepository());
+        return ResponseEntity.ok().body(itemsService.getItemsFromGitApi());
 
     }
-
+    
 
 }
