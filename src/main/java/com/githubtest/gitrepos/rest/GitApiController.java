@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/gitTrends")
+@RequestMapping("/gitTrend")
 public class GitApiController {
 
 
